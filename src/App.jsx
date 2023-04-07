@@ -19,15 +19,21 @@ function App() {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [xPlaying, setXPlaying] = useState(true);
   const [scores, setScores] = useState({ xScore: 0, oScore: 0 });
+  const [gameOver, setGameOver] = useState(false);
 
   const checkWinner = (board) => {
     for (let index = 0; index < WIN_CONDITIONS.length; index++) {
       const [x, y, z] = WIN_CONDITIONS[index];
       if (board[x] && board[x] === board[y] && board[y] === board[z]) {
-        console.log(board[x] + " is the winner!");
+        setGameOver(true);
         return board[x];
       }
     }
+  };
+
+  const resetGame = () => {
+    setGameOver(false);
+    setBoard(Array(9).fill(null));
   };
 
   const clickHandler = (boxIndex) => {
@@ -50,7 +56,6 @@ function App() {
         setScores({ ...scores, xScore });
       }
     }
-    console.log(scores);
 
     setBoard(updatedBoard);
     setXPlaying((val) => !val);
@@ -58,8 +63,8 @@ function App() {
 
   return (
     <div className="App">
-      <ScoreBoard />
-      <Board board={board} onClick={clickHandler} />
+      <ScoreBoard scores={scores} xPlaying={xPlaying} />
+      <Board board={board} onClick={gameOver ? resetGame : clickHandler} />
     </div>
   );
 }
